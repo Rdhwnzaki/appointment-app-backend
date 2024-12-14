@@ -65,6 +65,25 @@ app.post('/login', async (req, res) => {
     });
 });
 
+app.get('/users', authenticate, async (req, res) => {
+    try {
+        const users = await User.findAll();
+
+        res.json({
+            status: 'success',
+            message: 'Users fetched successfully',
+            data: users
+        });
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(500).json({
+            status: 'error',
+            message: 'An error occurred while fetching users',
+            data: null
+        });
+    }
+});
+
 app.get('/appointments', authenticate, async (req, res) => {
     const user = await User.findByPk(req.userId, {
         include: { model: Appointment, through: { attributes: [] } }
